@@ -1,7 +1,18 @@
-function runCheck() {
+(() => {
+  /**
+   * Check and set a global guard variable.
+   * If this content script is injected into the same page again,
+   * it will do nothing next time.
+   */
+  if (window.hasRun) {
+    return;
+  }
+  window.hasRun = true;
+  
+  function runCheck() {
 
-}
+  }
 
+  setInterval(function () {runCheck()}, 60000);
 
-
-setInterval(function () {runCheck()}, 60000);
+})()

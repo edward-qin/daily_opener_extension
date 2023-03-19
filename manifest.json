@@ -4,7 +4,7 @@
   "version": "1.0",
 
   "description": "Set times to open tabs only once daily",
-  "homepage_url": "www.google.com",
+  "homepage_url": "https://github.com/edward-qin/daily_opener_extension",
   "icons": {
     "48": "icons/main_icon-48.png"
   },
