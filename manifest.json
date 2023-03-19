@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Daily Opener",
+  "version": "1.0",
+
+  "description": "Set times to open tabs only once daily",
+  "homepage_url": "www.google.com",
+  "icons": {
+    "48": "icons/main_icon-48.png"
+  },
+
+  "permissions": ["storage"],
+
+  "browser_action": {
+    "default_icon": "icons/main_icon-32.png",
+    "default_title": "Daily Opener",
+    "default_popup": "popup/input_urls.html"
+  }
+}
