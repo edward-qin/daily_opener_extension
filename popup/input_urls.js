@@ -1,5 +1,5 @@
-// creates new line
-function createLine() {
+function createLine(url, time) {
+  console.log("enter create line", url);
   const line = document.createElement("div");
   line.setAttribute("class", "line");
 
@@ -24,45 +24,91 @@ function createLine() {
     }
   }
 
-  // Create the Add button
-  const addButton = document.createElement("button");
-  addButton.setAttribute("id", "add-button");
-  addButton.textContent = "Add";
-
-  // Add button stores URL, adds new line
-  addButton.addEventListener("click", () => {
+  const button = document.createElement("button");
+  
+  // adds url and time to storage
+  function addHandler() {
     const url = inputUrl.value;
     const time = inputTime.value;
-    storeUrl(url, time);
-  });
+    if (!isValidUrl(url)) {
+      return;
+    }
 
-  // Create the Remove button
-  const removeButton = document.createElement("button");
-  removeButton.setAttribute("id", "remove-button");
-  removeButton.textContent = "Remove";
+    let stored = browser.storage.local.set({ [url]: time });
+    stored.then(() => {
+      // change to remove button
+      button.textContent = "Remove";
+      button.removeEventListener("click", addHandler);
+      button.addEventListener("click", removeHandler);
 
-  // Remove button removes the line
-  removeButton.addEventListener("click", () => {
-    line.remove()
-  });
+      console.log("added", url, time);
+      createLine("", 0);
+    });
+  }
   
-  // Add to div and html body
+  // remove url from storage, remove line
+  function removeHandler() {
+    const url = inputUrl.value;
+    let removed = browser.storage.local.remove(url);
+    removed.then(() => {
+      line.remove();
+      // document.body.removeChild(button.parentElement);
+      console.log("removed", url);
+    });
+  }
+
+  // set button to add/remove
+  if (url === "") {
+    button.textContent = "Add";
+    button.addEventListener("click", addHandler);
+  } else {
+    inputUrl.value = url;
+    inputTime.value = time;
+    button.textContent = "Remove";
+    button.addEventListener("click", removeHandler);
+  }
+
+  // add to document body
   line.appendChild(inputUrl);
   line.appendChild(inputTime);
-  line.appendChild(addButton);
-  line.appendChild(removeButton);
+  line.appendChild(button);
   document.body.appendChild(line);
 }
 
-// stores mapping from time to url
-function storeUrl(url, time) {
-  let stored = browser.storage.local.set({ [time]: url });
-  stored.then(() => {
-    console.log(time, url);
-    createLine();
+// checks if a url is valid
+const isValidUrl = (urlString) => {
+  var urlPattern = new RegExp(
+    "^(https?:\\/\\/)?" + // validate protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // validate fragment locator
+  return !!urlPattern.test(urlString);
+};
+
+// fills the popup using urls and times stored in storage
+function fill() {
+  let gettingAllStorageItems = browser.storage.local.get(null);
+  console.log("initial state:");
+  // iterate over all stored urls, add to form
+  gettingAllStorageItems.then((results) => {
+    results[""] = 0;
+    let keys = Object.keys(results);
+    for (let url of keys) {
+      let time = results[url];
+      console.log(url, time);
+      createLine(url, time);
+    }
   });
 }
+  
 
+// 
 browser.tabs
   .executeScript({ file: "/content_scripts/daily_opener.js" })
-  .then(createLine);
+fill();
+console.log(document.body.firstChild);
+console.log(document.body.lastChild);
