@@ -15,5 +15,11 @@
     "default_icon": "icons/main_icon-32.png",
     "default_title": "Daily Opener",
     "default_popup": "popup/input_urls.html"
+  },
+
+  "background": {
+    "scripts": ["daily_opener.js"],
+    "persistent": false
   }
+  
 }

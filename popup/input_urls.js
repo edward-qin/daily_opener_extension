@@ -25,16 +25,28 @@ function createLine(url, time) {
   }
 
   const button = document.createElement("button");
-  
+
   // adds url and time to storage
-  function addHandler() {
-    const url = inputUrl.value;
-    const time = inputTime.value;
+  async function addHandler() {
+    // handle url validity, no-duplicates
+    let url = inputUrl.value;
     if (!isValidUrl(url)) {
       return;
     }
+    url = url.indexOf("://") === -1 ? "https://" + url : url; // cannot have '://' elsewhere in url
 
-    let stored = browser.storage.local.set({ [url]: time });
+    let items = await browser.storage.local.get(null);
+    if (url in items) {
+      return;
+    }
+
+    const time = inputTime.value;
+    let dict = {
+      set: time,
+      last: new Date(),
+    };
+
+    let stored = browser.storage.local.set({ [url]: JSON.stringify(dict) });
     stored.then(() => {
       // change to remove button
       button.textContent = "Remove";
@@ -45,7 +57,7 @@ function createLine(url, time) {
       createLine("", 0);
     });
   }
-  
+
   // remove url from storage, remove line
   function removeHandler() {
     const url = inputUrl.value;
@@ -98,17 +110,16 @@ function fill() {
     results[""] = 0;
     let keys = Object.keys(results);
     for (let url of keys) {
-      let time = results[url];
-      console.log(url, time);
+      let dict = JSON.parse(results[url]);
+      const time = dict["set"];
+      console.log(url, time, new Date(dict["last"]));
       createLine(url, time);
     }
   });
 }
-  
 
-// 
-browser.tabs
-  .executeScript({ file: "/content_scripts/daily_opener.js" })
+function onError(error) {
+  console.log(`Error: ${error}`);
+}
+
 fill();
-console.log(document.body.firstChild);
-console.log(document.body.lastChild);
