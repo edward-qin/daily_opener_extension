@@ -13,7 +13,7 @@ body {
   padding-top: 0px; 
   padding-bottom: 0px;
   float: left;
-  width: 62%;
+  width: 60%;
   margin-left: 2% auto;
   margin-top: 1%;
   margin-bottom: 0%;
@@ -25,7 +25,7 @@ body {
   padding-top: 0px; 
   padding-bottom: 0px;
   float: left;
-  width: 38%;
+  width: 40%;
   margin-left: 2% auto;
   margin-top: 1%;
   margin-bottom: 0%;
@@ -48,15 +48,14 @@ button {
   width: 15%;
 }
 
-input {
+.input-url {
   margin: 2% auto;
   padding: 4px;
   width: 55%;
 }
 
-select {
+.input-time {
   margin: 2% auto;
   padding: 4px;
-  text-align: center;
-  width: 15%;
+  width: 17%;
 }

@@ -1,5 +1,8 @@
+/**
+ * runs a check over all urls in the storage, opening the url in a tab if
+ * it has passed the set time to open
+ */
 function runCheck() {
-  console.log("entered runCheck");
   let gettingAllStorageItems = browser.storage.local.get(null);
 
   // iterate over all stored urls
@@ -9,7 +12,6 @@ function runCheck() {
       let dict = JSON.parse(results[url]);
       const set = dict["set"];
       const last = new Date(dict["last"]);
-      console.log(url, set, last);
 
       // get last time the tab should have been opened
       let curr = new Date();
@@ -21,23 +23,24 @@ function runCheck() {
 
       // open if was not opened since the last time
       if (last < currSet) {
-        console.log("will change", currSet);
         dict["last"] = new Date();
         browser.storage.local.set({[url]: JSON.stringify(dict)});
 
         let creating = browser.tabs.create({
           url: url
         });
-        creating.then(console.log("opened", url), onError);
+        creating.then(() => void 0, onError);
       }
     }
   }, onError);
 }
 
+// handles error
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+// run checks on startup and every minute
 browser.runtime.onStartup.addListener(() => runCheck);
 setInterval(function () {runCheck()}, 60000);
 

@@ -1,46 +1,32 @@
+/**
+ * creates and returns a line in the popup for user to input url and time to open url
+ * @param {string} url url to put in the input element; set to "" if this line is empty
+ * @param {number} time int representing time (60*h + m) to be set; only passed in when creating line for existing url schedule
+ */
 function createLine(url, time) {
-  console.log("enter create line", url);
   const line = document.createElement("div");
   line.setAttribute("class", "line");
 
   // Create the input field for the URL
   const inputUrl = document.createElement("input");
   inputUrl.setAttribute("type", "text");
-  inputUrl.setAttribute("id", "input-url");
+  inputUrl.setAttribute("class", "input-url");
 
-  // Create the select element for the time
-  const inputTime = document.createElement("select");
-  inputTime.setAttribute("id", "input-time");
-
-  // Create options for the select element
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
-      const option = document.createElement("option");
-      option.value = hour * 60 + minute;
-      option.text = `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}`;
-      inputTime.appendChild(option);
-    }
-  }
+  // Create the input field for the time
+  const inputTime = document.createElement("input");
+  inputTime.setAttribute("type", "time");
+  inputTime.setAttribute("class", "input-time");
 
   const button = document.createElement("button");
 
   // adds url and time to storage
   async function addHandler() {
-    // handle url validity, no-duplicates
-    let url = inputUrl.value;
-    if (!isValidUrl(url)) {
-      return;
-    }
-    url = url.indexOf("://") === -1 ? "https://" + url : url; // cannot have '://' elsewhere in url
-
-    let items = await browser.storage.local.get(null);
-    if (url in items) {
+    const url = await valUrl(inputUrl.value, true);
+    if (url === "") {
       return;
     }
 
-    const time = inputTime.value;
+    const time = timeVal(inputTime.value);
     let dict = {
       set: time,
       last: new Date(),
@@ -52,10 +38,25 @@ function createLine(url, time) {
       button.textContent = "Remove";
       button.removeEventListener("click", addHandler);
       button.addEventListener("click", removeHandler);
-
-      console.log("added", url, time);
+      inputUrl.readOnly = true;
+      inputTime.addEventListener("change", updateHandler);
       createLine("", 0);
     });
+  }
+
+  // updates the url/time
+  async function updateHandler() {
+    const url = await valUrl(inputUrl.value, false);
+    if (url === "") {
+      return;
+    }
+
+    const time = timeVal(inputTime.value);
+    let dict = {
+      set: time,
+      last: new Date(),
+    };
+    await browser.storage.local.set({ [url]: JSON.stringify(dict) });
   }
 
   // remove url from storage, remove line
@@ -64,8 +65,6 @@ function createLine(url, time) {
     let removed = browser.storage.local.remove(url);
     removed.then(() => {
       line.remove();
-      // document.body.removeChild(button.parentElement);
-      console.log("removed", url);
     });
   }
 
@@ -73,11 +72,14 @@ function createLine(url, time) {
   if (url === "") {
     button.textContent = "Add";
     button.addEventListener("click", addHandler);
+    inputTime.value = "00:00";
   } else {
     inputUrl.value = url;
-    inputTime.value = time;
+    inputTime.value = timeStr(time);
     button.textContent = "Remove";
     button.addEventListener("click", removeHandler);
+    inputUrl.readOnly = true;
+    inputTime.addEventListener("change", updateHandler);
   }
 
   // add to document body
@@ -87,21 +89,9 @@ function createLine(url, time) {
   document.body.appendChild(line);
 }
 
-// checks if a url is valid
-const isValidUrl = (urlString) => {
-  var urlPattern = new RegExp(
-    "^(https?:\\/\\/)?" + // validate protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // validate fragment locator
-  return !!urlPattern.test(urlString);
-};
-
-// fills the popup using urls and times stored in storage
+/**
+ * fills the popup with lines from storage and one new line to add in
+ */
 function fill() {
   let gettingAllStorageItems = browser.storage.local.get(null);
   console.log("initial state:");
@@ -118,8 +108,59 @@ function fill() {
   });
 }
 
+// handles error
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+// checks that the url is valid, non-duplicate
+// adds 'https://' if does not exist
+// dupe is set to true if we want to prevent duplicates, false otherwise
+async function valUrl(url, dupe) {
+  if (!isValidUrl(url)) {
+    return "";
+  }
+  url = url.indexOf("://") === -1 ? "https://" + url : url; // cannot have '://' elsewhere in url
+
+  let items = await browser.storage.local.get(null);
+  if (dupe && url in items) {
+    return "";
+  }
+  return url;
+}
+
+// checks if a url is valid
+const isValidUrl = (urlString) => {
+  var urlPattern = new RegExp(
+    "^(https?:\\/\\/)?" + // validate protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // validate fragment locator
+  return !!urlPattern.test(urlString);
+};
+
+// gets time value
+const timeVal = (timeString) => {
+  return (
+    parseInt(timeString.substring(0, 2)) * 60 +
+    parseInt(timeString.substring(3))
+  );
+};
+
+// gets time string
+const timeStr = (timeValue) => {
+  return (
+    Math.floor(timeValue / 60)
+      .toString()
+      .padStart(2, "0") +
+    ":" +
+    (timeValue % 60).toString().padStart(2, "0")
+  );
+};
+
+// fill the popup form
 fill();
