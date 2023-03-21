@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Daily Opener",
-  "version": "1.0",
+  "version": "1.0.1",
 
   "description": "Set times to open tabs only once daily",
   "homepage_url": "https://github.com/edward-qin/daily_opener_extension",
