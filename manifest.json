@@ -19,7 +19,7 @@
 
   "background": {
     "scripts": ["daily_opener.js"],
-    "persistent": false
+    "persistent": true
   }
   
 }
