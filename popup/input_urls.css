@@ -1,34 +1,10 @@
 html,
 body {
-  width: 500px;
+  width: 750px;
 }
 
 .hidden {
   display: none;
-}
-
-.left {
-  text-align: left;
-  padding-left: 6px;
-  padding-top: 0px; 
-  padding-bottom: 0px;
-  float: left;
-  width: 60%;
-  margin-left: 2% auto;
-  margin-top: 1%;
-  margin-bottom: 0%;
-}
-
-.right {
-  text-align: left;
-  padding-left: 6px;
-  padding-top: 0px; 
-  padding-bottom: 0px;
-  float: left;
-  width: 40%;
-  margin-left: 2% auto;
-  margin-top: 1%;
-  margin-bottom: 0%;
 }
 
 .line {
@@ -38,10 +14,51 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 2%;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.header-line {
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.left {
+  text-align: left;
+  padding-left: 0px;
+  padding-top: 0px; 
+  padding-bottom: 0px;
+  width: 40%;
+  margin: 0;
+}
+
+.time-header-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  width: 60%;
+  padding-left: 0;
+}
+
+.time-header {
+  text-align: left;
+  padding: 0;
+  padding-left: 0px;
+  margin: 0;
+  width: 80px;
+  flex: 0 0 auto;
+}
+
+.button-header {
+  width: 15%;
+  margin: 0;
+  padding: 0;
 }
 
 button {
-  margin: 2% auto;
+  margin: 0;
   padding: 4px;
   text-align: center;
   cursor: pointer;
@@ -49,13 +66,52 @@ button {
 }
 
 .input-url {
-  margin: 2% auto;
+  margin: 0;
   padding: 4px;
-  width: 55%;
+  width: 40%;
+}
+
+.time-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  width: 60%;
+  padding-left: 0;
 }
 
 .input-time {
-  margin: 2% auto;
   padding: 4px;
-  width: 17%;
+  flex: 0 0 auto;
+  width: 80px;
+}
+
+.input-timezone {
+  padding: 4px;
+  flex: 1 1 auto;
+  font-size: 11px;
+  min-width: 200px;
+  width: auto;
+}
+
+.line.success {
+  background-color: #d4edda;
+  transition: background-color 0.5s ease;
+}
+
+.status-message {
+  font-size: 11px;
+  color: #28a745;
+  margin-left: 3%;
+  margin-top: 2px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+.status-message.error {
+  color: #dc3545;
+}
+
+.input-url.error {
+  border: 2px solid #dc3545;
 }
