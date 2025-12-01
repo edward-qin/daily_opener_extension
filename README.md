@@ -15,3 +15,12 @@ Below is an example of how to fill out the popup.
 This was my first extension and JavaScript project.
 The extension can definitely be improved in both frontend and functionality.
 Feel free to contribute!
+
+## Generating a new version
+Run the following, where `x.y.z` is the version number.
+```bash
+zip -r daily_opener-x.y.z.zip . \
+  -x ".git/*" \
+  -x "web-ext-artifacts/*" \
+  -x ".*"
+```

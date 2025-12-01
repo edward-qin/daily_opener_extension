@@ -15,55 +15,30 @@ function runCheck() {
       const timezone = dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       // get last time the tab should have been opened in the specified timezone
-      let curr = new Date();
       const hours = Math.floor(set / 60);
       const minutes = set % 60;
-      
-      // Get current date/time components in the target timezone
-      const formatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: timezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
-      
-      const parts = formatter.formatToParts(curr);
-      const year = parseInt(parts.find(p => p.type === "year").value);
-      const month = parseInt(parts.find(p => p.type === "month").value) - 1; // 0-indexed
-      const day = parseInt(parts.find(p => p.type === "day").value);
-      const currHour = parseInt(parts.find(p => p.type === "hour").value);
-      const currMin = parseInt(parts.find(p => p.type === "minute").value);
-      
-      // Calculate timezone offset by comparing a known UTC time with its representation in target timezone
-      // Use noon to avoid DST edge cases
-      const noonUTC = new Date(Date.UTC(year, month, day, 12, 0, 0));
-      const noonInTzParts = formatter.formatToParts(noonUTC);
-      const noonTzHour = parseInt(noonInTzParts.find(p => p.type === "hour").value);
-      const offsetHours = noonTzHour - 12;
-      
-      // Create target time in UTC (adjusting for timezone offset)
-      let targetUTC = new Date(Date.UTC(year, month, day, hours - offsetHours, minutes, 0));
-      
-      // Verify and adjust: format the target UTC time back to target timezone to check
-      const verifyParts = formatter.formatToParts(targetUTC);
-      const verifyHour = parseInt(verifyParts.find(p => p.type === "hour").value);
-      const verifyMin = parseInt(verifyParts.find(p => p.type === "minute").value);
-      
-      // If verification doesn't match, adjust (handles DST)
-      if (verifyHour !== hours || verifyMin !== minutes) {
-        const diff = (hours * 60 + minutes) - (verifyHour * 60 + verifyMin);
-        targetUTC = new Date(targetUTC.getTime() + diff * 60000);
-      }
-      
-      const currSet = targetUTC;
-      
-      // If target time hasn't occurred today in target timezone, check yesterday
-      if (hours * 60 + minutes > currHour * 60 + currMin) {
-        currSet.setUTCDate(currSet.getUTCDate() - 1);
+
+      // Current time in local (browser) timezone
+      const now = new Date();
+
+      // Current time interpreted in the target timezone.
+      // toLocaleString with a timeZone gives us the wall-clock time in that zone;
+      // constructing a Date from it gives a local Date with the same Y/M/D H:M.
+      const nowInTz = new Date(now.toLocaleString("en-US", { timeZone: timezone }));
+
+      // Build "today at HH:MM in that timezone" as a Date in that timezone's wall-clock.
+      const targetInTz = new Date(nowInTz);
+      targetInTz.setHours(hours, minutes, 0, 0);
+
+      // Compute offset between that timezone and local time once, then reuse.
+      const offsetMs = nowInTz.getTime() - now.getTime();
+
+      // Convert the target-in-timezone Date to the equivalent UTC/local instant.
+      const currSet = new Date(targetInTz.getTime() - offsetMs);
+
+      // If target time hasn't occurred today in target timezone, check yesterday.
+      if (targetInTz > nowInTz) {
+        currSet.setDate(currSet.getDate() - 1);
       }
 
       // open if was not opened since the last time
