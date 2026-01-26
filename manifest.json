@@ -2,6 +2,14 @@
   "manifest_version": 2,
   "name": "Daily Opener",
   "version": "1.1.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@daily-opener",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
 
   "description": "Set times to open tabs only once daily",
   "homepage_url": "https://github.com/edward-qin/daily_opener_extension",
@@ -9,16 +17,16 @@
     "48": "icons/main_icon-48.png"
   },
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
 
   "browser_action": {
     "default_icon": "icons/main_icon-32.png",
     "default_title": "Daily Opener",
-    "default_popup": "popup/input_urls.html"
+    "default_popup": "src/popup/input_urls.html"
   },
 
   "background": {
-    "scripts": ["daily_opener.js"],
+    "page": "src/background/background.html",
     "persistent": true
   }
   
