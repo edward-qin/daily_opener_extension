@@ -51,7 +51,7 @@ function createLine(url, time, timezone) {
     }
 
     const time = timeVal(inputTime.value);
-    const tz = inputTimezone.value;
+    const tz = inputTimezone.value || null;
 
     try {
       await saveUrlSchedule(url, time, tz);
@@ -88,8 +88,8 @@ function createLine(url, time, timezone) {
     }
 
     const time = timeVal(inputTime.value);
-    const tz = inputTimezone.value;
-    
+    const tz = inputTimezone.value || null;
+
     try {
       await updateUrlSchedule(currentUrl, time, tz);
       // Visual feedback
@@ -120,8 +120,8 @@ function createLine(url, time, timezone) {
     
     // Get current settings
     const time = timeVal(inputTime.value);
-    const tz = inputTimezone.value;
-    
+    const tz = inputTimezone.value || null;
+
     try {
       await moveUrlEntry(originalUrl, newUrl, time, tz);
       
@@ -153,19 +153,11 @@ function createLine(url, time, timezone) {
     button.textContent = "Add";
     button.addEventListener("click", addHandler);
     inputTime.value = "00:00";
-    inputTimezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    inputTimezone.value = "";
   } else {
     inputUrl.value = url;
     inputTime.value = timeStr(time);
-    const defaultTz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // Find matching timezone option (with offset display)
-    const tzOptions = Array.from(inputTimezone.options);
-    const matchingOption = tzOptions.find(opt => opt.value === defaultTz);
-    if (matchingOption) {
-      inputTimezone.value = defaultTz;
-    } else {
-      inputTimezone.value = defaultTz;
-    }
+    inputTimezone.value = timezone || "";
     button.textContent = "Remove";
     button.addEventListener("click", removeHandler);
     // URL is editable for existing entries
@@ -189,7 +181,6 @@ function createLine(url, time, timezone) {
  */
 async function fill() {
   let gettingAllStorageItems = browser.storage.local.get(null);
-  console.log("initial state:");
   // iterate over all stored urls, add to form
   try {
     const results = await gettingAllStorageItems;
@@ -198,8 +189,7 @@ async function fill() {
       try {
         let dict = JSON.parse(results[url]);
         const time = dict["set"];
-        const timezone = dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
-        console.log(url, time, new Date(dict["last"]), timezone);
+        const timezone = dict["timezone"] || null;
         createLine(url, time, timezone);
         // Note: We don't reschedule alarms here to avoid duplicates
         // The background script handles alarm scheduling

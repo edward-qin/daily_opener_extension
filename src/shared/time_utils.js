@@ -102,10 +102,4 @@ function getTimezoneOffsetValue(offsetString) {
   return sign * (hours * 60 + minutes);
 }
 
-// ES module exports
 export { timeVal, timeStr, getTimezoneOffset, getTimezoneOffsetValue };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { timeVal, timeStr, getTimezoneOffset, getTimezoneOffsetValue };
-}

@@ -17,10 +17,4 @@ async function openUrlAndUpdate(url, dict) {
   }
 }
 
-// ES module exports
 export { openUrlAndUpdate };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { openUrlAndUpdate };
-}

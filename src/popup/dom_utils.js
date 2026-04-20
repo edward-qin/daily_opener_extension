@@ -1,12 +1,104 @@
 // DOM utility functions for popup UI
-import { getTimezoneOffset, getTimezoneOffsetValue } from '../shared/time_utils.js';
+
+const CURATED_TIMEZONES = [
+  { group: 'Americas', zones: [
+    { value: 'Pacific/Honolulu',                   label: 'Hawaii' },
+    { value: 'America/Anchorage',                  label: 'Alaska' },
+    { value: 'America/Los_Angeles',                label: 'Pacific — Los Angeles' },
+    { value: 'America/Denver',                     label: 'Mountain — Denver' },
+    { value: 'America/Phoenix',                    label: 'Arizona (no DST)' },
+    { value: 'America/Chicago',                    label: 'Central — Chicago' },
+    { value: 'America/New_York',                   label: 'Eastern — New York' },
+    { value: 'America/Toronto',                    label: 'Toronto' },
+    { value: 'America/Vancouver',                  label: 'Vancouver' },
+    { value: 'America/Mexico_City',                label: 'Mexico City' },
+    { value: 'America/Bogota',                     label: 'Bogotá' },
+    { value: 'America/Sao_Paulo',                  label: 'São Paulo' },
+    { value: 'America/Argentina/Buenos_Aires',     label: 'Buenos Aires' },
+    { value: 'America/Santiago',                   label: 'Santiago' },
+  ]},
+  { group: 'Europe', zones: [
+    { value: 'Europe/London',     label: 'London' },
+    { value: 'Europe/Lisbon',     label: 'Lisbon' },
+    { value: 'Europe/Paris',      label: 'Paris' },
+    { value: 'Europe/Berlin',     label: 'Berlin' },
+    { value: 'Europe/Rome',       label: 'Rome' },
+    { value: 'Europe/Madrid',     label: 'Madrid' },
+    { value: 'Europe/Amsterdam',  label: 'Amsterdam' },
+    { value: 'Europe/Stockholm',  label: 'Stockholm' },
+    { value: 'Europe/Warsaw',     label: 'Warsaw' },
+    { value: 'Europe/Helsinki',   label: 'Helsinki' },
+    { value: 'Europe/Athens',     label: 'Athens' },
+    { value: 'Europe/Bucharest',  label: 'Bucharest' },
+    { value: 'Europe/Istanbul',   label: 'Istanbul' },
+    { value: 'Europe/Moscow',     label: 'Moscow' },
+  ]},
+  { group: 'Africa', zones: [
+    { value: 'Africa/Casablanca',    label: 'Casablanca' },
+    { value: 'Africa/Lagos',         label: 'Lagos' },
+    { value: 'Africa/Cairo',         label: 'Cairo' },
+    { value: 'Africa/Johannesburg',  label: 'Johannesburg' },
+    { value: 'Africa/Nairobi',       label: 'Nairobi' },
+  ]},
+  { group: 'Asia', zones: [
+    { value: 'Asia/Dubai',        label: 'Dubai' },
+    { value: 'Asia/Karachi',      label: 'Karachi' },
+    { value: 'Asia/Kolkata',      label: 'Mumbai / Kolkata' },
+    { value: 'Asia/Dhaka',        label: 'Dhaka' },
+    { value: 'Asia/Bangkok',      label: 'Bangkok' },
+    { value: 'Asia/Jakarta',      label: 'Jakarta' },
+    { value: 'Asia/Singapore',    label: 'Singapore' },
+    { value: 'Asia/Shanghai',     label: 'Shanghai / Beijing' },
+    { value: 'Asia/Hong_Kong',    label: 'Hong Kong' },
+    { value: 'Asia/Taipei',       label: 'Taipei' },
+    { value: 'Asia/Seoul',        label: 'Seoul' },
+    { value: 'Asia/Tokyo',        label: 'Tokyo' },
+    { value: 'Asia/Vladivostok',  label: 'Vladivostok' },
+  ]},
+  { group: 'Pacific & Oceania', zones: [
+    { value: 'Australia/Perth',      label: 'Perth' },
+    { value: 'Australia/Darwin',     label: 'Darwin' },
+    { value: 'Australia/Adelaide',   label: 'Adelaide' },
+    { value: 'Australia/Brisbane',   label: 'Brisbane' },
+    { value: 'Australia/Sydney',     label: 'Sydney' },
+    { value: 'Australia/Melbourne',  label: 'Melbourne' },
+    { value: 'Pacific/Guam',         label: 'Guam' },
+    { value: 'Pacific/Fiji',         label: 'Fiji' },
+    { value: 'Pacific/Auckland',     label: 'Auckland' },
+  ]},
+];
+
+/**
+ * Creates a timezone select with "Browser timezone" as the default option,
+ * followed by a curated list of major zones grouped by region.
+ * @returns {HTMLSelectElement}
+ */
+function createTimezoneSelect() {
+  const select = document.createElement("select");
+  select.setAttribute("class", "input-timezone");
+
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.textContent = "Browser timezone";
+  select.appendChild(defaultOpt);
+
+  for (const { group, zones } of CURATED_TIMEZONES) {
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = group;
+    for (const { value, label } of zones) {
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = label;
+      optgroup.appendChild(opt);
+    }
+    select.appendChild(optgroup);
+  }
+
+  return select;
+}
 
 /**
  * Shows an error status message
- * @param {HTMLElement} statusMessage - The status message element
- * @param {HTMLElement} inputElement - The input element to add error class to
- * @param {string} message - The error message to display
- * @param {number} duration - Duration in milliseconds (default: 1500)
  */
 function showErrorStatus(statusMessage, inputElement, message, duration = 1500) {
   if (inputElement) {
@@ -25,10 +117,6 @@ function showErrorStatus(statusMessage, inputElement, message, duration = 1500) 
 
 /**
  * Shows a success status message
- * @param {HTMLElement} line - The line element to add success class to
- * @param {HTMLElement} statusMessage - The status message element
- * @param {string} message - The success message to display
- * @param {number} duration - Duration in milliseconds (default: 1000)
  */
 function showSuccessStatus(line, statusMessage, message, duration = 1000) {
   line.classList.add("success");
@@ -42,37 +130,7 @@ function showSuccessStatus(line, statusMessage, message, duration = 1000) {
 }
 
 /**
- * Creates and populates a timezone select dropdown
- * @returns {HTMLSelectElement} The populated timezone select element
- */
-function createTimezoneSelect() {
-  const inputTimezone = document.createElement("select");
-  inputTimezone.setAttribute("class", "input-timezone");
-  
-  // Populate timezone options with UTC offset, sorted by offset
-  const timezones = Intl.supportedValuesOf('timeZone');
-  const timezonesWithOffset = timezones.map(tz => {
-    const offset = getTimezoneOffset(tz);
-    const offsetValue = getTimezoneOffsetValue(offset);
-    return { tz, offset, offsetValue };
-  });
-  
-  // Sort by offset value (most negative to most positive)
-  timezonesWithOffset.sort((a, b) => a.offsetValue - b.offsetValue);
-  
-  timezonesWithOffset.forEach(({ tz, offset }) => {
-    const option = document.createElement("option");
-    option.value = tz;
-    option.textContent = `${tz} (${offset})`;
-    inputTimezone.appendChild(option);
-  });
-  
-  return inputTimezone;
-}
-
-/**
  * Creates a status message container with status span
- * @returns {Object} Object with statusContainer and statusMessage elements
  */
 function createStatusContainer() {
   const statusMessage = document.createElement("span");
@@ -84,5 +142,4 @@ function createStatusContainer() {
   return { statusContainer, statusMessage };
 }
 
-// ES module exports
 export { showErrorStatus, showSuccessStatus, createTimezoneSelect, createStatusContainer };

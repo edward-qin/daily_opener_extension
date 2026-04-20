@@ -124,10 +124,4 @@ async function rescheduleAllAlarms() {
   }
 }
 
-// ES module exports
 export { shouldOpenUrl, handleAlarm, rescheduleAllAlarms };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { shouldOpenUrl, handleAlarm, rescheduleAllAlarms };
-}

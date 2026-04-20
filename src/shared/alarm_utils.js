@@ -97,11 +97,5 @@ async function cancelAlarm(url) {
   return await browser.alarms.clear(url);
 }
 
-// ES module exports
 export { calculateNextAlarmTime, scheduleAlarm, cancelAlarm };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { calculateNextAlarmTime, scheduleAlarm, cancelAlarm };
-}
 

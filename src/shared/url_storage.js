@@ -58,10 +58,9 @@ async function moveUrlEntry(oldUrl, newUrl, time, timezone) {
     timezone: timezone,
   };
   
-  // Update with current time/timezone
+  // Update with new time/timezone, preserve existing last-opened time
   dict.set = time;
   dict.timezone = timezone;
-  dict.last = new Date();
   
   // Cancel old alarm, remove old URL, add new URL
   await cancelAlarm(oldUrl);
@@ -80,10 +79,4 @@ async function removeUrl(url) {
   await browser.storage.local.remove(url);
 }
 
-// ES module exports
 export { saveUrlSchedule, updateUrlSchedule, moveUrlEntry, removeUrl };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { saveUrlSchedule, updateUrlSchedule, moveUrlEntry, removeUrl };
-}

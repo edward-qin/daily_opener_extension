@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Daily Opener",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "browser_specific_settings": {
     "gecko": {
       "id": "@daily-opener",
@@ -17,7 +17,7 @@
     "48": "icons/main_icon-48.png"
   },
 
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "tabs"],
 
   "browser_action": {
     "default_icon": "icons/main_icon-32.png",
@@ -27,7 +27,7 @@
 
   "background": {
     "page": "src/background/background.html",
-    "persistent": true
+    "persistent": false
   }
   
 }

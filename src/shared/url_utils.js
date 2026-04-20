@@ -108,10 +108,4 @@ async function valUrl(url, dupe, excludeUrl = null) {
   return url; // Return original URL (not normalized) for storage
 }
 
-// ES module exports
 export { isValidUrl, normalizeUrl, valUrl };
-
-// CommonJS export for Node.js testing
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { isValidUrl, normalizeUrl, valUrl };
-}

@@ -121,27 +121,24 @@ describe('url_storage', () => {
       expect(scheduleAlarm).toHaveBeenCalledWith('https://new.com', 600, 'America/New_York');
     });
 
-    test('updates last when moving', async () => {
+    test('preserves last when moving', async () => {
+      const existingLast = new Date('2024-01-10T10:00:00Z');
       const oldData = {
         set: 480,
-        last: new Date('2024-01-10T10:00:00Z'),
+        last: existingLast,
         timezone: 'UTC'
       };
-      
+
       global.browser.storage.local.get.mockResolvedValue({
         'https://old.com': JSON.stringify(oldData)
       });
-      
-      const before = new Date();
+
       await moveUrlEntry('https://old.com', 'https://new.com', 600, 'UTC');
-      const after = new Date();
-      
+
       const setCall = global.browser.storage.local.set.mock.calls[0][0];
       const stored = JSON.parse(setCall['https://new.com']);
-      const lastDate = new Date(stored.last);
-      
-      expect(lastDate.getTime()).toBeGreaterThanOrEqual(before.getTime());
-      expect(lastDate.getTime()).toBeLessThanOrEqual(after.getTime());
+
+      expect(new Date(stored.last).getTime()).toBe(existingLast.getTime());
     });
   });
 
