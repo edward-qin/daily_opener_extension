@@ -210,3 +210,62 @@ button.btn-danger:hover {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Dark mode ──────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background: #0F172A;
+    color: #E2E8F0;
+  }
+
+  .popup-header {
+    background: #1E293B;
+  }
+
+  .header-line {
+    background: #1E293B;
+    border-bottom-color: #334155;
+    color: #94A3B8;
+  }
+
+  .line {
+    border-bottom-color: #1E293B;
+  }
+
+  .line:hover:not(.header-line) {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .line.success {
+    background-color: #052e16;
+  }
+
+  input[type="text"],
+  input[type="time"],
+  select {
+    background: #1E293B;
+    color: #E2E8F0;
+    border-color: #334155;
+  }
+
+  input[type="text"]:focus,
+  input[type="time"]:focus,
+  select:focus {
+    border-color: #64748B;
+    box-shadow: 0 0 0 2.5px rgba(100, 116, 139, 0.25);
+  }
+
+  button.btn-danger {
+    background: #450a0a;
+    color: #FCA5A5;
+  }
+
+  button.btn-danger:hover {
+    background: #7f1d1d;
+  }
+
+  .status-message {
+    color: #4ADE80;
+  }
+}

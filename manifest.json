@@ -24,7 +24,19 @@
   "browser_action": {
     "default_icon": "icons/main_icon.svg",
     "default_title": "Daily Opener",
-    "default_popup": "src/popup/input_urls.html"
+    "default_popup": "src/popup/input_urls.html",
+    "theme_icons": [
+      {
+        "light": "icons/toolbar-dark-theme.svg",
+        "dark": "icons/toolbar-light-theme.svg",
+        "size": 16
+      },
+      {
+        "light": "icons/toolbar-dark-theme.svg",
+        "dark": "icons/toolbar-light-theme.svg",
+        "size": 32
+      }
+    ]
   },
 
   "background": {
