@@ -1,25 +1,47 @@
 {
   "manifest_version": 2,
   "name": "Daily Opener",
-  "version": "1.1.0",
+  "version": "2.0.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{bc3bbc92-0175-4c6c-be8d-6c583b5e7837}",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
 
   "description": "Set times to open tabs only once daily",
   "homepage_url": "https://github.com/edward-qin/daily_opener_extension",
   "icons": {
-    "48": "icons/main_icon-48.png"
+    "48": "icons/main_icon-48.png",
+    "128": "icons/main_icon-128.svg"
   },
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms", "tabs"],
 
   "browser_action": {
-    "default_icon": "icons/main_icon-32.png",
+    "default_icon": "icons/main_icon.svg",
     "default_title": "Daily Opener",
-    "default_popup": "popup/input_urls.html"
+    "default_popup": "src/popup/input_urls.html",
+    "theme_icons": [
+      {
+        "light": "icons/toolbar-dark-theme.svg",
+        "dark": "icons/toolbar-light-theme.svg",
+        "size": 16
+      },
+      {
+        "light": "icons/toolbar-dark-theme.svg",
+        "dark": "icons/toolbar-light-theme.svg",
+        "size": 32
+      }
+    ]
   },
 
   "background": {
-    "scripts": ["daily_opener.js"],
-    "persistent": true
+    "page": "src/background/background.html",
+    "persistent": false
   }
   
 }

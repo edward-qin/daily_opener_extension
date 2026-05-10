@@ -1,0 +1,271 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 620px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #FAFAFA;
+  color: #1E293B;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.popup-header {
+  background: #1E293B;
+  color: white;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.popup-header h1 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── Column headers ─────────────────────────────────────── */
+
+.header-line {
+  background: #F1F5F9;
+  border-bottom: 1px solid #E2E8F0;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748B;
+}
+
+/* ── URL rows ───────────────────────────────────────────── */
+
+.line {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  gap: 8px;
+  border-bottom: 1px solid #F1F5F9;
+  transition: background-color 0.2s ease;
+}
+
+.line:last-of-type {
+  border-bottom: none;
+}
+
+.line:hover:not(.header-line) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.line.success {
+  background-color: #F0FDF4;
+}
+
+/* ── Column layout ──────────────────────────────────────── */
+
+.left {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+.time-header-container {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.time-header {
+  font-size: 10px;
+}
+
+.button-header {
+  flex: 0 0 68px;
+  width: 68px;
+}
+
+/* ── Inputs ─────────────────────────────────────────────── */
+
+input[type="text"],
+input[type="time"],
+select {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-family: inherit;
+  font-size: 12px;
+  color: #1E293B;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="time"]:focus,
+select:focus {
+  border-color: #94A3B8;
+  box-shadow: 0 0 0 2.5px rgba(148, 163, 184, 0.25);
+}
+
+input[type="text"].error {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 2.5px rgba(220, 38, 38, 0.13);
+}
+
+.input-url {
+  flex: 2 1 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.time-container {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.input-time {
+  flex: 0 0 86px;
+  width: 86px;
+}
+
+.input-timezone {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+
+button {
+  flex: 0 0 68px;
+  width: 68px;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  line-height: 1.5;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+button.btn-primary {
+  background: #0D9488;
+  color: white;
+}
+
+button.btn-primary:hover {
+  background: #0a7a71;
+  box-shadow: 0 1px 5px rgba(13, 148, 136, 0.35);
+}
+
+button.btn-danger {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+button.btn-danger:hover {
+  background: #FECACA;
+}
+
+/* ── Status messages ────────────────────────────────────── */
+
+.status-container {
+  padding: 0 14px 3px;
+}
+
+.status-message {
+  font-size: 11px;
+  font-weight: 500;
+  color: #16A34A;
+  display: inline-block;
+  animation: statusIn 0.15s ease;
+}
+
+.status-message.error {
+  color: #DC2626;
+}
+
+@keyframes statusIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Dark mode ──────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background: #0F172A;
+    color: #E2E8F0;
+  }
+
+  .popup-header {
+    background: #1E293B;
+  }
+
+  .header-line {
+    background: #1E293B;
+    border-bottom-color: #334155;
+    color: #94A3B8;
+  }
+
+  .line {
+    border-bottom-color: #1E293B;
+  }
+
+  .line:hover:not(.header-line) {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .line.success {
+    background-color: #052e16;
+  }
+
+  input[type="text"],
+  input[type="time"],
+  select {
+    background: #1E293B;
+    color: #E2E8F0;
+    border-color: #334155;
+  }
+
+  input[type="text"]:focus,
+  input[type="time"]:focus,
+  select:focus {
+    border-color: #64748B;
+    box-shadow: 0 0 0 2.5px rgba(100, 116, 139, 0.25);
+  }
+
+  button.btn-danger {
+    background: #450a0a;
+    color: #FCA5A5;
+  }
+
+  button.btn-danger:hover {
+    background: #7f1d1d;
+  }
+
+  .status-message {
+    color: #4ADE80;
+  }
+}
