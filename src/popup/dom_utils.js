@@ -79,7 +79,8 @@ function createTimezoneSelect() {
 
   const defaultOpt = document.createElement("option");
   defaultOpt.value = "";
-  defaultOpt.textContent = "Browser timezone";
+  defaultOpt.textContent = "Local timezone";
+  defaultOpt.title = "Uses your device’s current timezone. Re-evaluated each time an alarm fires or the browser restarts — so it follows timezone changes automatically.";
   select.appendChild(defaultOpt);
 
   for (const { group, zones } of CURATED_TIMEZONES) {
@@ -137,7 +138,7 @@ function createStatusContainer() {
   statusMessage.setAttribute("class", "status-message");
   statusMessage.style.display = "none";
   const statusContainer = document.createElement("div");
-  statusContainer.style.marginLeft = "3%";
+  statusContainer.setAttribute("class", "status-container");
   statusContainer.appendChild(statusMessage);
   return { statusContainer, statusMessage };
 }

@@ -3,11 +3,8 @@ import { handleAlarm, rescheduleAllAlarms } from './alarm_handler.js';
 
 browser.alarms.onAlarm.addListener(handleAlarm);
 
-// Handle browser restart and extension installation
+// onStartup: catches any opens missed while browser was closed
+// onInstalled: sets up alarms after install or update (migration from old setInterval approach)
 browser.runtime.onStartup.addListener(() => rescheduleAllAlarms());
 browser.runtime.onInstalled.addListener(() => rescheduleAllAlarms());
-
-// Handle fallback
-rescheduleAllAlarms();
-
 

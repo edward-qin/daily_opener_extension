@@ -1,5 +1,5 @@
 // Shared alarm utilities used by both the background script and the popup
-import { Temporal } from '@js-temporal/polyfill';
+// Requires Firefox 139+ for native Temporal support (no import needed)
 
 /**
  * Returns the next UTC timestamp (ms) at which the local time in `timeZone`
@@ -82,9 +82,9 @@ function calculateNextAlarmTime(set, timeZone) {
  * @param {string} timezone - Timezone string
  */
 async function scheduleAlarm(url, set, timezone) {
-  // Clear any existing alarm first to prevent duplicates
+  const resolvedTimezone = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
   await browser.alarms.clear(url);
-  const alarmTime = calculateNextAlarmTime(set, timezone);
+  const alarmTime = calculateNextAlarmTime(set, resolvedTimezone);
   await browser.alarms.create(url, { when: alarmTime });
 }
 

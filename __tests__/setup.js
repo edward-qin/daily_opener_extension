@@ -1,3 +1,7 @@
+// Polyfill Temporal for Node/Jest (Firefox 139+ provides this natively in the extension)
+const { Temporal } = require('@js-temporal/polyfill');
+global.Temporal = Temporal;
+
 // Mock browser APIs for testing
 global.browser = {
   alarms: {

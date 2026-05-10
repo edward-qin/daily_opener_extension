@@ -64,6 +64,7 @@ function createLine(url, time, timezone) {
       
       // change to remove button and enable editing
       button.textContent = "Remove";
+      button.classList.replace("btn-primary", "btn-danger");
       button.removeEventListener("click", addHandler);
       button.addEventListener("click", removeHandler);
       inputUrl.addEventListener("blur", urlChangeHandler);
@@ -151,6 +152,7 @@ function createLine(url, time, timezone) {
   // set button to add/remove
   if (url === "") {
     button.textContent = "Add";
+    button.classList.add("btn-primary");
     button.addEventListener("click", addHandler);
     inputTime.value = "00:00";
     inputTimezone.value = "";
@@ -159,6 +161,7 @@ function createLine(url, time, timezone) {
     inputTime.value = timeStr(time);
     inputTimezone.value = timezone || "";
     button.textContent = "Remove";
+    button.classList.add("btn-danger");
     button.addEventListener("click", removeHandler);
     // URL is editable for existing entries
     inputUrl.addEventListener("blur", urlChangeHandler);

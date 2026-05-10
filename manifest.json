@@ -5,6 +5,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "@daily-opener",
+      "strict_min_version": "139.0",
       "data_collection_permissions": {
         "required": ["none"]
       }
@@ -20,7 +21,7 @@
   "permissions": ["storage", "alarms", "tabs"],
 
   "browser_action": {
-    "default_icon": "icons/main_icon-32.png",
+    "default_icon": "icons/main_icon.svg",
     "default_title": "Daily Opener",
     "default_popup": "src/popup/input_urls.html"
   },

@@ -94,9 +94,7 @@ async function handleAlarm(alarm) {
     await openUrlAndUpdate(url, dict);
   }
 
-  const set = dict["set"];
-  const timezone = dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
-  await scheduleAlarm(url, set, timezone);
+  await scheduleAlarm(url, dict["set"], dict["timezone"]);
 }
 
 /**
@@ -110,14 +108,12 @@ async function rescheduleAllAlarms() {
   for (let url of keys) {
     try {
       const dict = JSON.parse(results[url]);
-      const set = dict["set"];
-      const timezone = dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
-      
+
       if (shouldOpenUrl(dict)) {
         await openUrlAndUpdate(url, dict);
       }
-      
-      await scheduleAlarm(url, set, timezone);
+
+      await scheduleAlarm(url, dict["set"], dict["timezone"]);
     } catch (error) {
       onError(error);
     }
