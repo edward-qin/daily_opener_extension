@@ -1,6 +1,6 @@
 {
   "name": "daily-opener-extension",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Firefox extension to open tabs daily, but only once",
   "scripts": {
     "test": "jest",
