@@ -1,6 +1,6 @@
-# daily_opener_extension
+# Daily URL Opener Extension
 
-Firefox extension (140+) to open tabs daily, but only once.
+Firefox extension (142+) to open tabs daily, but only once.
 
 ## Features
 
