@@ -19,61 +19,24 @@ import { openUrlAndUpdate } from '../shared/storage_utils.js';
  */
 function shouldOpenUrl(dict) {
   const set = dict["set"];
-  const timezone =
-    dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timezone = dict["timezone"] || Intl.DateTimeFormat().resolvedOptions().timeZone;
   const last = new Date(dict["last"]);
 
-  const hours = Math.floor(set / 60);
-  const minutes = set % 60;
-
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-  });
-
-  const extract = (date) => {
-    const parts = formatter.formatToParts(date);
-    const get = (type) =>
-      parseInt(parts.find((p) => p.type === type).value, 10);
-
-    const hour = get("hour");
-    const minute = get("minute");
-
-    return {
-      year: get("year"),
-      month: get("month"),
-      day: get("day"),
-      hour,
-      minute,
-      totalMinutes: hour * 60 + minute
-    };
-  };
-
-  const nowInfo = extract(new Date());
-  const lastInfo = extract(last);
-
-  const targetTotalMin = hours * 60 + minutes;
+  const now = Temporal.Now.zonedDateTimeISO(timezone);
+  const lastInTz = Temporal.Instant.fromEpochMilliseconds(last.getTime())
+    .toZonedDateTimeISO(timezone);
 
   const lastIsToday =
-    lastInfo.year === nowInfo.year &&
-    lastInfo.month === nowInfo.month &&
-    lastInfo.day === nowInfo.day;
+    lastInTz.year === now.year &&
+    lastInTz.month === now.month &&
+    lastInTz.day === now.day;
 
-  // If we haven't opened the URL today in this timezone, we should open it once today.
-  if (!lastIsToday) {
-    return true;
-  }
+  if (!lastIsToday) return true;
 
-  // Last open was today: only open again if we haven't yet opened after today's scheduled time.
-  const nowHasPassedSchedule = nowInfo.totalMinutes >= targetTotalMin;
-  const lastBeforeSchedule = lastInfo.totalMinutes < targetTotalMin;
+  const nowTotalMin = now.hour * 60 + now.minute;
+  const lastTotalMin = lastInTz.hour * 60 + lastInTz.minute;
 
-  return nowHasPassedSchedule && lastBeforeSchedule;
+  return nowTotalMin >= set && lastTotalMin < set;
 }
 
 /**

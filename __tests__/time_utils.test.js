@@ -1,5 +1,5 @@
 // Tests for time utility functions
-const { timeVal, timeStr, getTimezoneOffset, getTimezoneOffsetValue } = require('../src/shared/time_utils');
+const { timeVal, timeStr } = require('../src/shared/time_utils');
 
 describe('time_utils', () => {
   describe('timeVal', () => {
@@ -41,68 +41,6 @@ describe('time_utils', () => {
       const testCases = ['00:00', '01:30', '12:45', '23:59', '09:05'];
       testCases.forEach(str => {
         expect(timeStr(timeVal(str))).toBe(str);
-      });
-    });
-  });
-
-  describe('getTimezoneOffset', () => {
-    test('returns UTC offset string format', () => {
-      const offset = getTimezoneOffset('UTC');
-      expect(offset).toMatch(/^UTC[+-]\d+:\d{2}$/);
-      expect(offset).toBe('UTC+0:00');
-    });
-
-    test('handles different timezones', () => {
-      const est = getTimezoneOffset('America/New_York');
-      expect(est).toMatch(/^UTC[+-]\d+:\d{2}$/);
-      
-      const pst = getTimezoneOffset('America/Los_Angeles');
-      expect(pst).toMatch(/^UTC[+-]\d+:\d{2}$/);
-      
-      // Slightly more strict check: UTC-8:00 or UTC-7:00
-      expect(pst).toMatch(/^UTC-\d?[78]:\d{2}$/);
-    });
-
-    test('handles invalid timezone gracefully', () => {
-      const result = getTimezoneOffset('Invalid/Timezone');
-      expect(result).toBe('UTC+0:00');
-    });
-
-    test('always includes minutes in format', () => {
-      const offset = getTimezoneOffset('UTC');
-      expect(offset).toContain(':');
-      expect(offset.split(':')[1].length).toBe(2);
-    });
-  });
-
-  describe('getTimezoneOffsetValue', () => {
-    test('parses UTC offset strings correctly', () => {
-      expect(getTimezoneOffsetValue('UTC+0:00')).toBe(0);
-      expect(getTimezoneOffsetValue('UTC+5:00')).toBe(300);
-      expect(getTimezoneOffsetValue('UTC-8:00')).toBe(-480);
-      expect(getTimezoneOffsetValue('UTC+5:30')).toBe(330);
-      expect(getTimezoneOffsetValue('UTC-8:30')).toBe(-510);
-    });
-
-    test('handles edge cases', () => {
-      expect(getTimezoneOffsetValue('UTC+12:00')).toBe(720);
-      expect(getTimezoneOffsetValue('UTC-12:00')).toBe(-720);
-    });
-
-    test('returns 0 for invalid format', () => {
-      expect(getTimezoneOffsetValue('invalid')).toBe(0);
-      expect(getTimezoneOffsetValue('UTC')).toBe(0);
-      expect(getTimezoneOffsetValue('')).toBe(0);
-    });
-
-    test('can parse output of getTimezoneOffset', () => {
-      const timezones = ['UTC', 'America/New_York', 'America/Los_Angeles', 'Asia/Kolkata'];
-      timezones.forEach(tz => {
-        const offsetStr = getTimezoneOffset(tz);
-        const offsetVal = getTimezoneOffsetValue(offsetStr);
-        expect(typeof offsetVal).toBe('number');
-        expect(offsetVal).toBeGreaterThanOrEqual(-720);
-        expect(offsetVal).toBeLessThanOrEqual(720);
       });
     });
   });

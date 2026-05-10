@@ -108,4 +108,4 @@ async function valUrl(url, dupe, excludeUrl = null) {
   return url; // Return original URL (not normalized) for storage
 }
 
-export { isValidUrl, normalizeUrl, valUrl };
+export { normalizeUrl, valUrl };

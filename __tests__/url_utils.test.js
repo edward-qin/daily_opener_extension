@@ -1,5 +1,5 @@
 // Tests for URL utility functions
-const { isValidUrl, normalizeUrl, valUrl } = require('../src/shared/url_utils');
+const { normalizeUrl, valUrl } = require('../src/shared/url_utils');
 
 // Mock browser storage
 const mockStorage = {};
@@ -16,26 +16,6 @@ describe('url_utils', () => {
     // Clear mock storage before each test
     Object.keys(mockStorage).forEach(key => delete mockStorage[key]);
     jest.clearAllMocks();
-  });
-
-  describe('isValidUrl', () => {
-    test('validates valid URLs', () => {
-      expect(isValidUrl('https://example.com')).toBe(true);
-      expect(isValidUrl('http://example.com')).toBe(true);
-      expect(isValidUrl('https://example.com/path')).toBe(true);
-      expect(isValidUrl('https://example.com:8080/path?query=1')).toBe(true);
-      expect(isValidUrl('https://subdomain.example.com')).toBe(true);
-      expect(isValidUrl('example.com')).toBe(true);
-      expect(isValidUrl('192.168.1.1')).toBe(true);
-      expect(isValidUrl('https://example.com#fragment')).toBe(true);
-    });
-
-    test('rejects invalid URLs', () => {
-      expect(isValidUrl('not a url')).toBe(false);
-      expect(isValidUrl('')).toBe(false);
-      expect(isValidUrl('just text')).toBe(false);
-      expect(isValidUrl('ftp://example.com')).toBe(false);
-    });
   });
 
   describe('normalizeUrl', () => {

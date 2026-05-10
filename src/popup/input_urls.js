@@ -41,11 +41,9 @@ function createLine(url, time, timezone) {
 
   // adds url and time to storage
   async function addHandler() {
-    // Don't normalize here - valUrl will handle it
-    const url = await valUrl(inputUrl.value, true);
+    const validatedUrl = await valUrl(inputUrl.value, true);
     
-    if (url === "") {
-      // Show error message
+    if (validatedUrl === "") {
       showErrorStatus(statusMessage, inputUrl, "Invalid URL or duplicate");
       return;
     }
@@ -54,13 +52,11 @@ function createLine(url, time, timezone) {
     const tz = inputTimezone.value || null;
 
     try {
-      await saveUrlSchedule(url, time, tz);
-      
-      // Visual feedback
+      await saveUrlSchedule(validatedUrl, time, tz);
+
       showSuccessStatus(line, statusMessage, "✓ Added");
-      
-      // Update originalUrl to the newly added URL
-      originalUrl = url;
+
+      originalUrl = validatedUrl;
       
       // change to remove button and enable editing
       button.textContent = "Remove";
@@ -68,7 +64,6 @@ function createLine(url, time, timezone) {
       button.removeEventListener("click", addHandler);
       button.addEventListener("click", removeHandler);
       inputUrl.addEventListener("blur", urlChangeHandler);
-      inputTimezone.disabled = false;
       inputTime.addEventListener("change", updateHandler);
       inputTimezone.addEventListener("change", updateHandler);
       createLine("", 0, null);
@@ -163,9 +158,7 @@ function createLine(url, time, timezone) {
     button.textContent = "Remove";
     button.classList.add("btn-danger");
     button.addEventListener("click", removeHandler);
-    // URL is editable for existing entries
     inputUrl.addEventListener("blur", urlChangeHandler);
-    inputTimezone.disabled = false;
     inputTime.addEventListener("change", updateHandler);
     inputTimezone.addEventListener("change", updateHandler);
   }
@@ -183,10 +176,8 @@ function createLine(url, time, timezone) {
  * Note: Does not reschedule alarms - they are already scheduled by the background script
  */
 async function fill() {
-  let gettingAllStorageItems = browser.storage.local.get(null);
-  // iterate over all stored urls, add to form
   try {
-    const results = await gettingAllStorageItems;
+    const results = await browser.storage.local.get(null);
     let keys = Object.keys(results);
     for (let url of keys) {
       try {
@@ -207,7 +198,4 @@ async function fill() {
   }
 }
 
-// Popup UI functions - DOM manipulation and event handlers
-
-// fill the popup form
 fill();

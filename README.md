@@ -1,6 +1,6 @@
 # daily_opener_extension
 
-Firefox extension (139+) to open tabs daily, but only once.
+Firefox extension (140+) to open tabs daily, but only once.
 
 ## Features
 
@@ -15,7 +15,7 @@ Below is an example of how to fill out the popup.
 
 ## Requirements
 
-- Firefox 139 or later (uses native `Temporal` API for DST-safe scheduling)
+- Firefox 142 or later (uses native `Temporal` API for DST-safe scheduling)
 
 ## Small Note
 This was my first extension and JavaScript project.
@@ -25,15 +25,13 @@ Feel free to contribute!
 ## Generating a new version
 Run the following, where `x.y.z` is the version number.
 ```bash
-zip -r daily_opener-x.y.z.zip . \
-  -x ".git/*" \
-  -x "web-ext-artifacts/*" \
-  -x "node_modules/*" \
-  -x "__tests__/*" \
-  -x "coverage/*" \
-  -x "package*.json" \
-  -x "babel.config.js" \
-  -x ".*"
+zip -r web-ext-artifacts/daily_opener-x.y.z.zip \
+  manifest.json \
+  src/ \
+  icons/ \
+  assets/ \
+  README.md \
+  CHANGELOG.md
 ```
 
 ## Technical Details

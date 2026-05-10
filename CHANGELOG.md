@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 ## [2.0.0]
 
 ### Breaking Changes
-- Requires Firefox 139+ (uses native `Temporal` API)
+- Requires Firefox 142+ (uses native `Temporal` API)
 
 ### Added
 - URL and time are both editable after adding an entry (changes saved automatically)
