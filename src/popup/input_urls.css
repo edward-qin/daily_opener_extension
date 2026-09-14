@@ -132,8 +132,8 @@ input[type="text"].error {
 }
 
 .input-time {
-  flex: 0 0 86px;
-  width: 86px;
+  flex: 0 0 112px;
+  width: 112px;
 }
 
 .input-timezone {

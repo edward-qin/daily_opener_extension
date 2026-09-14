@@ -6,8 +6,8 @@
  * equals `set` (minutes since midnight).
  * Policy:
  * - If the time has passed today -> tomorrow
- * - If the local time does not exist today (DST gap) -> tomorrow
- * - On DST fall-back ambiguity -> first occurrence
+ * - If the local time does not exist (DST gap) -> tomorrow
+ * - If the local time has 2 occurences of that time -> first occurrence
  * 
  * @param {number} set - Time in minutes (60*hours + minutes)
  * @param {string} timeZone - Timezone string

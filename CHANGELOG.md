@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.3]
+
+### Bug fix
+
+UI bug where firefox time box overlaps with text box. Made text box width wider to accomodate.
+
+## [2.0.2]
+
+### Bug fix
+
+URLs would open even though the last set time had triggered a tab open. This was due a minor logic bug with the check for when to trigger a tab open.
+
+## [2.0.1]
+
+Never committed as this was AI slop.
 
 ## [2.0.0]
 

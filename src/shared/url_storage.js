@@ -14,8 +14,7 @@ async function saveUrlSchedule(url, time, timezone) {
     last: new Date(),
     timezone: timezone,
   };
-  await browser.storage.local.set({ [url]: JSON.stringify(dict) });
-  await scheduleAlarm(url, time, timezone);
+  await addUrl(url, dict);
 }
 
 /**
@@ -33,13 +32,11 @@ async function updateUrlSchedule(url, time, timezone) {
     timezone: timezone,
   };
   
-  // Update with new time/timezone
+  // Update with new time/timezone, preserve existing last-opened time
   dict.set = time;
   dict.timezone = timezone;
-  // Keep existing 'last' opened time value unless this is a new entry
   
-  await browser.storage.local.set({ [url]: JSON.stringify(dict) });
-  await scheduleAlarm(url, time, timezone);
+  await addUrl(url, dict);
 }
 
 /**
@@ -63,10 +60,19 @@ async function moveUrlEntry(oldUrl, newUrl, time, timezone) {
   dict.timezone = timezone;
   
   // Cancel old alarm, remove old URL, add new URL
-  await cancelAlarm(oldUrl);
-  await browser.storage.local.remove(oldUrl);
-  await browser.storage.local.set({ [newUrl]: JSON.stringify(dict) });
-  await scheduleAlarm(newUrl, time, timezone);
+  await removeUrl(oldUrl);
+  await addUrl(newUrl, dict);
+}
+
+/**
+ * Adds a URL to storage and sets its alarm
+ * @param {string} url - The URL to add
+ * @param {dict} dict - The {set, last, timezone} entry
+ * @returns {Promise<void>}
+ */
+async function addUrl(url, dict) {
+  await browser.storage.local.set({ [url]: JSON.stringify(dict) });
+  await scheduleAlarm(url, dict.set, dict.timezone);
 }
 
 /**
