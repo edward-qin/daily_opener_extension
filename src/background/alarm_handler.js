@@ -6,11 +6,12 @@ import { openUrlAndUpdate } from '../shared/storage_utils.js';
 /**
  * Determines if a URL should be opened based on its last opened time and scheduled time.
  *
- * Semantics (matching tests):
- * - If the URL has **not been opened today** in the target timezone -> open once today
- * - If it **has** been opened today:
- *   - Open only if the scheduled time has already passed today
- *   - And the last-open time was **before** today's scheduled time
+ * Semantics:
+ * - Everything is in the target timezone
+ * - We first check whether the "set" time for today has triggered. This is not met if either
+ *   - The last trigger was before today's set time, but was today
+ *   - The last trigger was before today's set time, but was before today
+ * - If we need to potentially trigger, we also check that "now" has passed the "set" time today.
  *
  * This keeps behavior intuitive while still respecting timezones and DST via Intl.
  *
@@ -31,12 +32,12 @@ function shouldOpenUrl(dict) {
     lastInTz.month === now.month &&
     lastInTz.day === now.day;
 
-  if (!lastIsToday) return true;
-
   const nowTotalMin = now.hour * 60 + now.minute;
   const lastTotalMin = lastInTz.hour * 60 + lastInTz.minute;
 
-  return nowTotalMin >= set && lastTotalMin < set;
+  const needsCheckToday = !lastIsToday || lastTotalMin < set;
+  const needsTrigger = needsCheckToday && nowTotalMin >= set;
+  return needsTrigger;
 }
 
 /**
@@ -47,6 +48,8 @@ function shouldOpenUrl(dict) {
 async function handleAlarm(alarm) {
   const url = alarm.name;
   const result = await browser.storage.local.get(url);
+
+  // Url entry has since been removed
   if (!result[url]) {
     return;
   }

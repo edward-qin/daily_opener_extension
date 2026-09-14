@@ -98,7 +98,7 @@ describe('alarm_handler', () => {
       expect(typeof shouldOpenUrl(dict)).toBe('boolean');
     });
 
-    test('returns true if scheduled time for today hasn\'t passed yet', () => {
+    test('returns false if scheduled time for today hasn\'t passed yet and last open was yesterday', () => {
       // Set current time to Jan 15, 2024 1:00 PM UTC
       const mockNow = new Date('2024-01-15T13:00:00Z');
       jest.setSystemTime(mockNow);
@@ -109,8 +109,24 @@ describe('alarm_handler', () => {
         timezone: 'UTC'
       };
       
-      // Most recent scheduled time was yesterday (since today's hasn't happened yet)
-      // Last opened yesterday, so should open
+      // Most recent scheduled time was yesterday
+      // But today's scheduled time hasn't passed yet, so shouldn't open
+      expect(shouldOpenUrl(dict)).toBe(false);
+    });
+
+    test('returns true if scheduled time for today has passed and last open was yesterday', () => {
+      // Set current time to Jan 15, 2024 3:00 PM UTC
+      const mockNow = new Date('2024-01-15T15:00:00Z');
+      jest.setSystemTime(mockNow);
+      
+      const dict = {
+        set: 840, // 2:00 PM UTC = 14:00 (has passed)
+        last: new Date('2024-01-14T20:00:00Z'), // Last opened yesterday
+        timezone: 'UTC'
+      };
+      
+      // Most recent scheduled time was yesterday
+      // Today's scheduled time has passed, so should open
       expect(shouldOpenUrl(dict)).toBe(true);
     });
   });
